@@ -30,4 +30,45 @@
     // Warn when previewing locally
     (function(){
       if (window.location.protocol === 'file:') {
-        alert("Exp
+        alert("Exported games won't work until you upload them. Browsers block many features on file:// for security.");
+      }
+    })();
+  </script>
+  <div id="c2canvasdiv">
+    <canvas id="c2canvas" width="640" height="480">
+      <h1>Your browser does not support HTML5. <a href="http://www.whatbrowser.org">Upgrade your browser</a></h1>
+    </canvas>
+  </div>
+  <!-- Load dependencies -->
+  <script src="./jquery-3.4.1.min.js"></script>
+  <script src="./c2runtime.js"></script>
+  <!-- Offline support client -->
+  <script src="./offlineClient.js"></script>
+  <script>
+    // Start the game when ready
+    jQuery(document).ready(function(){ cr_createRuntime("c2canvas"); });
+    // Pause/resume on visibility
+    function onVisibilityChanged(){
+      cr_setSuspended(!!(document.hidden || document.mozHidden || document.webkitHidden || document.msHidden));
+    }
+    ['visibilitychange','mozvisibilitychange','webkitvisibilitychange','msvisibilitychange']
+      .forEach(evt => document.addEventListener(evt, onVisibilityChanged, false));
+    // Register service worker
+    window.C2_RegisterSW = function() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(reg => console.log('SW registered at', reg.scope))
+          .catch(e => console.warn('SW registration failed:', e));
+      }
+    };
+  </script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6S9Y2CXQ4H"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6S9Y2CXQ4H');
+  </script>
+</body>
+</html>
